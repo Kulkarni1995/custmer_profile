@@ -61,9 +61,9 @@ def parse_customer_transaction(record):
     Parses customer transaction data into a structured dictionary with enrichment.
     """
     record[1][3] = str(record[1][3]).strip()
-    date = datetime.strptime(record[1][1], '%Y-%m-%d %H:%M:%S')
-
-    if float(record[1][2]) <= 1000000 and float(record[1][2]) >= 0:
+    date = record[1][1].split(' ')
+    date_part = date[0].split('-')
+    if 0 <= float(record[1][2]) <= 1000000:
         return {
             'transaction_id': record[0],
             'customer_id': record[1][0],
@@ -71,10 +71,11 @@ def parse_customer_transaction(record):
             'amount': float(record[1][2]),
             'category': re.sub(r'[^a-zA-Z0-9\s]', '', record[1][3]),
             'is_large_transaction': float(record[1][2]) > 1000,
-            'year': date.year,
-            'month': date.month,
-            'day': date.day
+            'year': date_part[0],
+            'month': date_part[1],
+            'day': date_part[2]
         }
+
 
 
 
